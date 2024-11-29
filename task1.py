@@ -47,7 +47,7 @@ def relax_system(z, z_threshold):
         for i in range(L):
             if z[i] > z_threshold[i]:
                 avalanches += 1
-                z_threshold[i] = np.random.choice([1, 2])  # Choose new threshold
+                z_threshold[i] = np.random.choice([1, 2])
                 if i == 0:
                     z[i] -= 2
                     z[i + 1] += 1
@@ -80,13 +80,12 @@ def oslo_model(L, num_grains):
     for _ in range(num_grains):
         drive_system(z)
         z, z_threshold, avalanches = relax_system(z, z_threshold)
-        heights.append(np.sum(z))  # Total height of the system
+        heights.append(np.sum(z))
         avalanche_sizes.append(avalanches)
 
     return heights, avalanche_sizes
 
 
-# Function to calculate avalanche size probability
 def calculate_probability(avalanche_sizes, max_size):
     """
     Calculate the probability P(s, L) for avalanche sizes.
@@ -106,13 +105,11 @@ def calculate_probability(avalanche_sizes, max_size):
 
 
 def task_1(L, num_grains):
-    # Run the simulation
     heights, avalanche_sizes = oslo_model(L, num_grains)
 
-    # Plot the results
     plt.figure(figsize=(12, 6))
 
-    # Plot system height over time
+    # system height over time
     plt.subplot(1, 2, 1)
     plt.plot(range(num_grains), heights, label="System Height")
     plt.xlabel("Number of Grains")
@@ -120,7 +117,7 @@ def task_1(L, num_grains):
     plt.title("System Height vs. Number of Grains")
     plt.legend()
 
-    # Plot avalanche sizes
+    # avalanche sizes
     plt.subplot(1, 2, 2)
     plt.plot(range(num_grains), avalanche_sizes, label="Avalanche Size")
     plt.xlabel("Number of Grains")
@@ -132,16 +129,14 @@ def task_1(L, num_grains):
     plt.show()
 
 def task_2(L, num_grains):
-    # Run the Oslo model
     heights, avalanche_sizes = oslo_model(L, num_grains)
 
-    # Find s_max for scaling
+    # s_max for scaling
     s_max = max(avalanche_sizes)
 
-    # Compute scaled avalanche sizes
+    # scaled avalanche sizes
     scaled_avalanche_sizes = [s / s_max for s in avalanche_sizes]
 
-    # Plot the scaled avalanche size as a function of time
     plt.figure(figsize=(10, 5))
     plt.plot(range(num_grains), scaled_avalanche_sizes, label=r"Scaled Avalanche Size $s/s_{max}$")
     plt.axvline(x=L, color='r', linestyle='--', label='Transient Period End ($t \\approx L$)')
@@ -153,7 +148,6 @@ def task_2(L, num_grains):
     plt.show()
 
 def task_3(system_sizes, num_grains):
-    # Run simulations for different system sizes
     results = {}
     for L in system_sizes:
         _, avalanche_sizes = oslo_model(L, num_grains)
@@ -161,7 +155,6 @@ def task_3(system_sizes, num_grains):
         s, P = calculate_probability(avalanche_sizes, max_size)
         results[L] = (s, P)
 
-    # Plot P(s, L) vs. s in log-log scale
     plt.figure(figsize=(10, 6))
     for L in system_sizes:
         s, P = results[L]
